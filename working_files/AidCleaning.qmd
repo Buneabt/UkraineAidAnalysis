@@ -1,0 +1,56 @@
+```{r]}
+library(tidyverse)
+library(here)
+library(cowplot)
+library(lubridate)
+
+
+aid <- read.csv(here('data_raw','AidCleanDates.csv'))
+
+View(aid)
+
+aid1 <- aid %>% 
+    select(Countries, Announcement.Date, Type.of.Aid.General, Total, Converted.Value.in.EUR, Total_in_USD) %>% 
+    filter(Total_in_USD != 0) %>% 
+    filter(Total != ".") %>% 
+    group_by(Countries) %>% 
+    mutate(Total_in_USD = as.double(Total_in_USD)) %>% 
+    mutate(Date = mdy(Announcement.Date)) %>% 
+    mutate(Week = floor_date(Date, unit = 'week')) %>% 
+    mutate(Month = floor_date(Date, unit = 'month')) %>% 
+    mutate(Date = as.Date(Date))
+
+write_csv(aid1, 'aid.csv')
+    
+
+View(aid1)
+
+glimpse(aid1)
+
+
+aid2 <- aid1 %>% 
+    select(Countries, Total_by_Country) %>% 
+    slice(1, 13, 14,28,31,56,63,91,103,113,125,131,145,149,150,157,161,165,170,189,196,206,213,221,227,237,240,242,254,258,271,284,299,307)
+
+View(aid2)
+
+glimpse(aid1)
+View(aid1)
+
+country_aid <- aid2 %>% 
+    mutate(Total_by_Country = Total_by_Country / 10^9) %>% 
+    mutate(Countries = fct_reorder(Countries, Total_by_Country)) %>% 
+    ggplot()+
+    geom_col(aes(x = Total_by_Country, y = Countries)) +
+    labs(x = "Total Military Aid (Billions of $)", y = "", title = "Foreign Military Aid to Ukraine")+
+    theme_bw()+
+    scale_x_continuous(expand = expansion(mult = c(0, 0.05)))
+    
+View(aid)
+
+glimpse(aid)
+
+    
+
+
+```

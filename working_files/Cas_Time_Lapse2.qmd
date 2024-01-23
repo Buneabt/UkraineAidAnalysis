@@ -1,0 +1,100 @@
+```{r]}
+library(cowplot)
+library(tidyverse)
+library(viridis)
+library(ggrepel)
+library(gganimate)
+library(magick)
+library(here)
+
+
+cas <- read.csv(here('data_raw','Total_Cas.csv'))
+
+View(cas)
+glimpse(cas1)
+
+cas1 <- cas %>% 
+    mutate(color = (country == "Russia")) %>% 
+    group_by(country)
+
+cas1 %>% 
+    mutate(Date = fct_inorder(Date, TRUE)) %>% 
+    ungroup() %>% 
+    ggplot(aes())+
+    geom_point(aes(x = Date, y = type_total, color = color)) +
+    scale_color_manual(values = c('blue', 'red'), labels = c('Ukraine','Russia'))+
+    labs(x = "", y = "Total Equipment Casualties (Cumulative)", color = "", title = "Ukrainian and Russian Equipment Casualties") +
+    scale_x_discrete(guide = guide_axis(angle = 90)) +
+    theme_minimal_vgrid()
+
+cas.anim
+
+cas.anim.ukraine <- cas1 %>%
+    filter(country == 'Ukraine') %>% 
+    mutate(Date = fct_inorder(Date, TRUE)) %>% 
+    ungroup() %>% 
+    ggplot(aes(x = Date, y = type_total, group = 1))+
+    geom_line(color = 'gold', linewidth = 1.0)+
+    geom_point(color = 'blue', size = 2.0) +
+    labs(x = "Total Equipment Casualties", y = "", color = "", title = "Ukrainian Equipment Casualties") +
+    scale_x_discrete(guide = guide_axis(angle = 90)) +
+    theme_minimal_vgrid()
+
+cas.anim.russia <- cas1 %>%
+    filter(country == 'Russia') %>% 
+    mutate(Date = fct_inorder(Date, TRUE)) %>% 
+    ungroup() %>% 
+    ggplot(aes(x = Date, y = type_total, group = 1))+
+    geom_line(color = 'blue', linewidth = 0.50)+
+    geom_point(color = 'red', size = 2.0) +
+    labs(x = "", y = "Total Equipment Casualties", color = "", title = "Russian Equipment Casualties") +
+    scale_x_discrete(guide = guide_axis(angle = 90)) +
+    theme_minimal_vgrid()
+
+cas.anim.russia
+
+global.temp.anim <- global_temps %>% 
+    ggplot(aes(x = year, y = meanTemp)) +
+    geom_line(color = 'maroon', size = 0.5) +
+    geom_point(color = 'black', size = 1.5) +
+    theme_half_open(font_size = 18)+
+    labs(x = "Year", y = "Average Global Temperature")
+
+cas.anim
+ukraine_animation <- cas.anim.ukraine+
+    transition_time(type_total)+
+    labs(title = "Casualties: {frame_time}")
+
+russia_animation <- cas.anim.russia+
+    transition_time(type_total)+
+    labs(title = "Casualties: {frame_time}")
+
+cas.anim2 +
+  transition_time(type_total) +
+  labs(title = "Casualties: {frame_time}")
+
+gganimate(ukraine_animation,
+        end_pause = 15,
+        duration = 10,
+        width = 1100, height = 650, res = 150,
+        renderer = magick_renderer())
+
+gganimate(russia_animation,
+        end_pause = 15,
+        duration = 10,
+        width = 1100, height = 650, res = 150,
+        renderer = magick_renderer())
+
+
+cas.anim2 <- cas1 %>% 
+    mutate(Date = fct_inorder(Date, TRUE)) %>% 
+    ggplot(aes(x = Date, y = type_total, color = color, group = 2))+
+    geom_point() +
+    geom_line()+
+    scale_color_manual(values = c('blue', 'red'), labels = c('Ukraine','Russia'))+
+    labs(x = "", y = "Total Equipment Casualties (Cumulative)", color = "", title = "Ukrainian and Russian Equipment Casualties") +
+    scale_x_discrete(guide = guide_axis(angle = 90)) +
+    theme_minimal_vgrid()
+cas.anim2
+
+```

@@ -1,0 +1,328 @@
+```{r]}
+library(tidyverse)
+library(here)
+library(cowplot)
+library(lubridate)
+library(gganimate)
+library(transformr)
+library(ggrepel)
+library(viridis)
+
+
+aid <- read.csv(here('data_processed','aid.csv'))
+top_aid <- read.csv(here('data_processed','top_ten_aid.csv'))
+
+all_aid <- aid %>% 
+    mutate(Date = as.Date(Date)) %>% 
+    mutate(Week = as.Date(Week)) %>%
+    mutate(Month = as.Date(Month)) %>%
+    group_by(Countries) %>% 
+    mutate(Total_in_USD = as.double(Total_in_USD)) %>% 
+    mutate(Total_by_Country = sum(Total_in_USD)) %>% 
+    ungroup()
+
+mil_aid <- aid %>% 
+    mutate(Date = as.Date(Date)) %>% 
+    mutate(Week = as.Date(Week)) %>%
+    mutate(Month = as.Date(Month)) %>%
+    group_by(Countries) %>% 
+    filter(Type.of.Aid.General == "Military") %>% 
+    mutate(Total_in_USD = as.double(Total_in_USD)) %>% 
+    mutate(Total_by_Country = sum(Total_in_USD)) %>% 
+    arrange(Month) %>% 
+    mutate(Cumulative = cumsum(Total_in_USD)) %>% 
+    ungroup()
+
+View(mil_aid)
+
+write.csv(mil_aid, 'top_aid.csv')
+
+top_aid <- read.csv(here('data_processed','top_aid.csv'))
+
+top_aid_months <- read.csv(here('data_processed', 'top_aid_by_months.csv'))
+
+
+top_aid <- top_aid %>% 
+    mutate(Date = mdy(Date)) %>% 
+    mutate(Week = mdy(Week)) %>% 
+    mutate(Month = mdy(Month)) %>% 
+    mutate(Date = as.Date(Date)) %>% 
+    mutate(Week = as.Date(Week)) %>%
+    mutate(Month = as.Date(Month))
+
+glimpse(top_aid)
+
+View(mil_aid)
+
+mil_aid %>% 
+    group_by(Countries) %>% 
+    ggplot()+
+    geom_col(aes(x = Total_by_Country, y = Countries))
+
+
+
+aid_race <- top_aid_months %>%
+    group_by(Month) %>%
+    mutate(
+        rank = rank(-Cumulative),
+        Value_lbl = paste0(' ', round(Cumulative))) %>%
+    group_by(Countries) %>%
+    filter(rank <= 10) %>%
+    ungroup() %>%
+    mutate(Month = format(mdy(Month), "%Y%m")) %>% 
+    mutate(Month = as.integer(Month)) %>%
+    ggplot(aes(x = rank, group = Countries)) +
+    geom_tile(aes(y = Cumulative / 2,
+                  height = Cumulative),
+              width = 0.9, alpha = 0.8, color = NA) +
+    geom_text(aes(y = 0, label = paste(Countries, " ")),
+              vjust = 0.2, hjust = 1) +
+    geom_text(aes(y = Cumulative, label = Value_lbl),
+              hjust = 0) +
+    coord_flip(clip = 'off', expand = FALSE) +
+    scale_y_continuous(labels = scales::comma) +
+    scale_fill_viridis(discrete = TRUE) +
+    scale_color_viridis(discrete = TRUE) +
+    scale_x_reverse() +
+    guides(color = "none") +
+    theme_minimal_vgrid() +
+    theme(
+        axis.line = element_blank(),
+        axis.text = element_blank(),
+        axis.ticks = element_blank(),
+        axis.title = element_blank(),
+        legend.position = c(0.7, 0.3),
+        legend.background = element_rect(fill = 'white'),
+        plot.title = element_text(
+          size = 22, hjust = 0.5, face = 'bold',
+          colour = 'grey', vjust = -1),
+        plot.subtitle = element_text(
+          size = 18, hjust = 0.5,
+          face = 'italic', color = 'grey'),
+        plot.caption = element_text(
+          size = 8, hjust = 0.5,
+          face = 'italic', color = 'grey'),
+          plot.margin = margin(0.5, 2, 0.5, 3, 'cm')) +
+    transition_time(Month) +
+    view_follow(fixed_x = TRUE) +
+    labs(title    = 'Month : {frame_time}',
+         subtitle = 'Top 10 Aid Providers to Ukraine',
+         fill = 'Region',
+         caption = 'Military Aid Provided (Hundreds of Millions USD)'
+    )
+
+aid_race
+
+milk_race_anim
+
+milk_region_anim <- milk_race_anim +
+    transition_reveal(Week)
+
+animate(aid_race, duration = 20, end_pause = 10,
+        width = 800, height = 700, res = 200,
+        renderer = magick_renderer())
+
+
+top_aid_months %>% 
+    mutate(Month = fct_inorder(Month, TRUE)) %>% 
+    mutate(Cumulative = Cumulative / 10^9) %>% 
+    ggplot(aes(x = Month, y = Cumulative, color = Countries, group = Countries))+
+    geom_point()+
+    geom_line()+
+    scale_x_discrete(guide = guide_axis(angle = 90)) +
+    annotate(geom = 'text', x = "4/1/2023", y = 42,
+             label = 'United States', size = 4, color = 'black') +
+    annotate(geom = 'text', x = "4/1/2023", y = 20,
+             label = 'Germany', size = 4, color = 'black') +
+    annotate(geom = 'text', x = "2/1/2023", y = 9,
+             label = 'Rest of Top Ten', size = 4, color = 'black') +
+    labs(x = "",
+         y = "Cumulative Aid Delivered (Billions of USD)",
+         title = "Monthly Aid Pledged to Ukraine",
+         subtitle = "By Top Ten Contributing Countries/Organizations")+
+    theme_minimal_grid()+
+    theme(legend.position = 'none')
+
+top_aid_months %>% 
+    filter(Countries != "United States") %>% 
+    filter(Countries != "Germany") %>% 
+    mutate(Month = fct_inorder(Month, TRUE)) %>% 
+    mutate(Cumulative = Cumulative / 10^9) %>% 
+    ggplot(aes(x = Month, y = Cumulative, color = Countries, group = Countries))+
+    geom_point()+
+    geom_line()+
+    scale_x_discrete(guide = guide_axis(angle = 90)) +
+    theme_minimal_grid()+
+    theme(legend.position = 'none')
+
+try <- top_aid_months %>% 
+    group_by(Month) %>% 
+    mutate(monthly_total = sum(Cumulative))
+
+write.csv(try1, 'aid_bar.csv')
+
+View(try)
+
+try1 <- try %>% 
+    ungroup() %>% 
+    mutate(Month = fct_inorder(Month, TRUE)) %>% 
+    mutate(monthly_total = monthly_total / 10^9) %>% 
+    ggplot(aes(x = Month, y = monthly_total))+
+    geom_col()+
+    scale_x_discrete(guide = guide_axis(angle = 90))
+
+try1 <- try %>% 
+    ungroup() %>% 
+    mutate(Month = fct_inorder(Month, TRUE)) %>% 
+    mutate(monthly_total = monthly_total / 10^9)
+
+View(try1)
+
+try1 %>% 
+    ggplot(aes(x = Month, y = monthly_total))+
+    geom_col()+
+    scale_x_discrete(guide = guide_axis(angle = 90))
+
+try2 <- try1 %>% 
+    slice(1,11,21,31,41,51,61,71,81,91,106,111,121,131,141,151,161,171)
+
+View(try2)
+
+try2 %>% 
+    ggplot(aes(x = Month, y = monthly_total))+
+    geom_col()+
+    scale_x_discrete(guide = guide_axis(angle = 90))
+
+write.csv(try2, 'aid_col.csv')
+
+aid_col <- read.csv(here('data_processed', 'aid_col.csv'))
+
+View(aid_col)
+
+aid_col %>% 
+    mutate(Month = fct_inorder(Month, TRUE)) %>% 
+    ggplot(aes(x = Month, y = monthly_total))+
+    geom_col()+
+    labs(x = "", y = "Total Military Aid (Billions of USD)", title = "Cumulative Military Aid by Month", subtitle = "From Top Ten Contributing Countries")+
+    annotate(geom = 'text', x = "2/1/2022", y = 4,
+             label = 1.00, size =3, color = 'black') +
+    annotate(geom = 'text', x = "3/1/2022", y = 14.92,
+             label = 10.92, size =3, color = 'black') +
+    annotate(geom = 'text', x = "4/1/2022", y = 24.99,
+             label = 21.99, size =3, color = 'black') +
+    annotate(geom = 'text', x = "5/1/2022", y = 27.12,
+             label = 24.12, size =3, color = 'black') +
+    annotate(geom = 'text', x = "6/1/2022", y = 28.48,
+             label = 25.48, size =3, color = 'black') +
+    annotate(geom = 'text', x = "7/1/2022", y = 29.09,
+             label = 26.09, size =3, color = 'black') +
+    annotate(geom = 'text', x = "8/1/2022", y = 29.43,
+             label = 26.43, size =3, color = 'black') +
+    annotate(geom = 'text', x = "9/1/2022", y = 36.33,
+             label = 33.33, size =3, color = 'black') +
+    annotate(geom = 'text', x = "10/1/2022", y = 37.23,
+             label = 34.23, size =3, color = 'black') +
+    annotate(geom = 'text', x = "11/1/2022", y = 38.30,
+             label = 35.30, size =3, color = 'black') +
+    annotate(geom = 'text', x = "12/1/2022", y = 62.82,
+             label = 59.82, size =3, color = 'black') +
+    annotate(geom = 'text', x = "1/1/2023", y = 66.71,
+             label = 63.71, size =3, color = 'black') +
+    annotate(geom = 'text', x = "2/1/2023", y = 70.47,
+             label = 67.47, size =3, color = 'black') +
+    annotate(geom = 'text', x = "3/1/2023", y = 74.74,
+             label = 71.74, size =3, color = 'black') +
+    annotate(geom = 'text', x = "4/1/2023", y = 82.36,
+             label = 79.36, size =3, color = 'black') +
+    annotate(geom = 'text', x = "5/1/2023", y = 94.94,
+             label = 91.94, size =3, color = 'black') +
+    annotate(geom = 'text', x = "6/1/2023", y = 95.33,
+             label = 92.33, size =3, color = 'black') +
+    annotate(geom = 'text', x = "7/1/2023", y = 95.36,
+             label = 92.36, size =3, color = 'black') +
+    theme_minimal_hgrid()+
+    scale_x_discrete(guide = guide_axis(angle = 90))
+    
+    
+
+```
+
+
+
+
+```{r}
+
+aid <- read.csv(here('data_raw','World Wide Aid.csv'))
+aid1 <- aid %>% 
+    filter(Type.of.Aid.General == "Military") %>% 
+    select(Countries, Original.Currency,Type.of.Aid.General, Monetary.Value.as.Given.by.Source, Total, Converted.Value.in.EUR, Total.monetary.value.delivered.in.EUR, Total_in_USD) %>% 
+    filter(Total != "") %>% 
+    filter(Total != ".") %>% 
+    group_by(Countries) %>% 
+    mutate(Total_in_USD = as.double(Total_in_USD)) %>% 
+    mutate(Total_by_Country = sum(Total_in_USD)) %>% 
+    ungroup()
+
+aid2 <- aid1 %>% 
+    select(Countries, Total_by_Country) %>% 
+    slice(1, 13, 14,28,31,56,63,91,103,113,125,131,145,149,150,157,161,165,170,189,196,206,213,221,227,237,240,242,254,258,271,284,298,299,307) %>% 
+    mutate(Countries = fct_reorder(Countries, Total_by_Country)) %>% 
+    mutate(Total_by_Country = (Total_by_Country / 10^9))
+
+View(aid2)
+View(aid1)
+
+aid2 %>% 
+    slice(33,12,34,23,8,24,21,5,31,35) %>% 
+    mutate(Countries = fct_reorder(Countries, Total_by_Country)) %>% 
+    ggplot()+
+    geom_col(aes(x = Total_by_Country, y = Countries)) +
+    labs(x = "Total Military Aid (Billions of $)", y = "", title = "Top Contributors of \nForeign Military Aid to Ukraine")+
+    annotate(geom = 'text', x = 43, y = 'United States',
+             label = 44.63, size = 3, color = 'black') +
+    annotate(geom = 'text', x = 16.5, y = 'Germany',
+             label = 18.11, size = 3, color = 'black') +
+    annotate(geom = 'text', x = 5.7, y = 'United Kingdom',
+             label = 6.97, size = 3, color = 'black') +
+    annotate(geom = 'text', x = 4.7, y = 'European Peace Facility',
+             label = 5.94, size = 3, color = 'black') +
+    annotate(geom = 'text', x = 2.7, y = 'Norway',
+             label = 3.91, size = 3, color = 'black') +
+    annotate(geom = 'text', x = 2.6, y = 'Denmark',
+             label = 3.71, size = 3, color = 'black') +
+    annotate(geom = 'text', x = 2, y = 'Poland',
+             label = 3.18, size = 3, color = 'black') +
+    annotate(geom = 'text', x = 1.5, y = 'Netherlands',
+             label = 2.63, size = 3, color = 'black') +
+    annotate(geom = 'text', x = .9, y = 'Canada',
+             label = 1.76, size = 2, color = 'black') +
+    annotate(geom = 'text', x = .8, y = 'Sweden',
+             label = 1.56, size =2, color = 'black') +
+    theme_minimal_vgrid()+
+    theme(legend.position = 'none')+
+    scale_x_continuous(expand = expansion(mult = c(0, 0.05)))
+
+View(aid2)
+
+aid2 %>% 
+    mutate(Total_by_Country = (Total_by_Country / 10^9)) %>% 
+    slice(33,12,34,23,8,24,21,5,31,35) %>% 
+    mutate(Countries = fct_other(Countries, keep = "United States",
+                                 "Germany", 
+                                 "United Kingdom",
+                                 "European Peace Facility",
+                                 "Norway", 
+                                 "Denmark", 
+                                 "Poland", 
+                                 "Netherlands", 
+                                 "Canada", 
+                                 "Sweden"
+                                 )) %>% 
+    ggplot()+
+    geom_col(aes(x = Total_by_Country, y = Countries)) +
+    labs(x = "Total Military Aid (Billions of $)", y = "", title = "Foreign Military Aid to Ukraine")+
+    theme_bw()+
+    scale_x_continuous(expand = expansion(mult = c(0, 0.05)))
+
+```
+

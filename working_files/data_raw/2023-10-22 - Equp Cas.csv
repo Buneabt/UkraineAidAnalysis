@@ -1,0 +1,52 @@
+,country,equipment_type,destroyed,abandoned,captured,damaged,type_total,row_id,Date,Price,Total
+1,Russia,All Types,8836,490,2899,547,12772,1,10/22/2023,,
+2,Russia,Tanks,1580,152,550,137,2419,2,10/22/2023,3100000,7498900000
+3,Russia,Armoured Fighting Vehicles,672,39,269,30,1010,3,10/22/2023,1900000,1919000000
+4,Russia,Infantry Fighting Vehicles,2043,158,615,111,2927,4,10/22/2023,1900000,5561300000
+5,Russia,Armoured Personnel Carriers,246,18,92,11,367,5,10/22/2023,2100000,770700000
+6,Russia,Mine-Resistant Ambush Protected,35,1,9,4,49,6,10/22/2023,2100000,102900000
+7,Russia,Infantry Mobility Vehicles,156,4,51,8,219,7,10/22/2023,100000,21900000
+8,Russia,Command Posts And Communications Stations,166,2,84,2,254,8,10/22/2023,2000000,508000000
+9,Russia,Engineering Vehicles And Equipment,177,42,125,11,355,9,10/22/2023,1800000,639000000
+10,Russia,Self-Propelled Anti-Tank Missile Systems,18,4,19,1,42,10,10/22/2023,16000000,672000000
+11,Russia,Artillery Support Vehicles And Equipment,55,2,52,0,109,11,10/22/2023,60000,6540000
+12,Russia,Towed Artillery,188,5,101,34,328,12,10/22/2023,2025000,664200000
+13,Russia,Self-Propelled Artillery,432,7,107,32,578,13,10/22/2023,1500000,867000000
+14,Russia,Multiple Rocket Launchers,221,2,53,20,296,14,10/22/2023,434000,128464000
+15,Russia,Anti-Aircraft Guns,5,0,14,0,19,15,10/22/2023,60000,1140000
+16,Russia,Self-Propelled Anti-Aircraft Guns,14,2,8,1,25,16,10/22/2023,14000000,350000000
+17,Russia,Surface-To-Air Missile Systems,121,4,24,25,174,17,10/22/2023,3700000,643800000
+18,Russia,Radars,29,0,9,5,43,18,10/22/2023,4000000,172000000
+19,Russia,Jammers And Deception Systems,44,0,7,6,57,19,10/22/2023,900000,51300000
+20,Russia,Aircraft,85,0,0,8,93,20,10/22/2023,30000000,2790000000
+21,Russia,Helicopters,101,0,2,28,131,21,10/22/2023,16000000,2096000000
+22,Russia,Unmanned Combat Aerial Vehicles,11,0,3,0,14,22,10/22/2023,5000000,70000000
+23,Russia,Reconnaissance Unmanned Aerial Vehicles,172,0,129,0,301,23,10/22/2023,100000,30100000
+24,Russia,Naval Ships and Submarines,11,0,0,5,16,24,10/22/2023,500000000,8000000000
+25,Russia,"Trucks, Vehicles, and Jeeps",2254,51,574,64,2943,25,10/22/2023,30000,88290000
+26,Ukraine,All Types,3143,173,962,350,4628,1,10/22/2023,,
+27,Ukraine,Tanks,443,34,142,54,673,2,10/22/2023,3100000,2086300000
+28,Ukraine,Armoured Fighting Vehicles,236,8,80,9,333,3,10/22/2023,1900000,632700000
+29,Ukraine,Infantry Fighting Vehicles,558,59,116,49,782,4,10/22/2023,1900000,1485800000
+30,Ukraine,Armoured Personnel Carriers,217,23,93,25,358,5,10/22/2023,2100000,751800000
+31,Ukraine,Mine-Resistant Ambush Protected,117,19,8,24,168,6,10/22/2023,2100000,352800000
+32,Ukraine,Infantry Mobility Vehicles,234,7,114,31,386,7,10/22/2023,100000,38600000
+33,Ukraine,Command Posts And Communications Stations,13,0,4,0,17,8,10/22/2023,2000000,34000000
+34,Ukraine,Engineering Vehicles And Equipment,51,5,25,9,90,9,10/22/2023,1800000,162000000
+35,Ukraine,Self-Propelled Anti-Tank Missile Systems,8,1,12,0,21,10,10/22/2023,16000000,336000000
+36,Ukraine,Artillery Support Vehicles And Equipment,10,0,13,0,23,11,10/22/2023,60000,1380000
+37,Ukraine,Towed Artillery,91,2,18,52,163,12,10/22/2023,2025000,330075000
+38,Ukraine,Self-Propelled Artillery,161,0,23,48,232,13,10/22/2023,1500000,348000000
+39,Ukraine,Multiple Rocket Launchers,32,0,9,9,50,14,10/22/2023,434000,21700000
+40,Ukraine,Anti-Aircraft Guns,0,0,4,0,4,15,10/22/2023,60000,240000
+41,Ukraine,Self-Propelled Anti-Aircraft Guns,2,1,3,1,7,16,10/22/2023,14000000,98000000
+42,Ukraine,"Surface-To-Air Missile Systems
+",108,1,6,14,129,17,10/22/2023,3700000,477300000
+43,Ukraine,Radars And Communications Equipment,61,1,11,8,81,18,10/22/2023,4000000,324000000
+44,Ukraine,Jammers And Deception Systems,3,0,1,0,4,19,10/22/2023,900000,3600000
+45,Ukraine,Aircraft,75,0,1,1,77,20,10/22/2023,30000000,2310000000
+46,Ukraine,Helicopters,33,0,3,1,37,21,10/22/2023,16000000,592000000
+47,Ukraine,Unmanned Combat Aerial Vehicles,25,0,0,0,25,22,10/22/2023,5000000,125000000
+48,Ukraine,Reconnaissance Unmanned Aerial Vehicles,112,0,73,1,186,23,10/22/2023,100000,18600000
+49,Ukraine,Naval Ships,9,0,17,1,27,24,10/22/2023,500000000,13500000000
+50,Ukraine,"Trucks, Vehicles, and Jeeps",543,12,182,18,755,25,10/22/2023,30000,22650000

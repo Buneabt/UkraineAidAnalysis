@@ -1,0 +1,51 @@
+```{r]}
+library(cowplot)
+library(tidyverse)
+library(viridis)
+library(ggrepel)
+library(gganimate)
+library(magick)
+library(here)
+
+
+aid <- read.csv(here('data_raw','World Wide Aid.csv'))
+aid2 <- read.csv(here('data_raw', 'World Wide Aid - Copy.csv'))
+View(aid)
+
+aid
+
+aid_sel <- aid %>% 
+    select(Countries, Announcement.Date, Total_in_USD, Type.of.Aid.General, Converted.Value.in.EUR) %>% 
+    filter(Converted.Value.in.EUR != ".") %>% 
+    filter(Total_in_USD != 0)
+    
+aid2Sel <- aid2 %>% 
+    select(Countries, Announcement.Date, Total_in_USD, Type.of.Aid.General, Converted.Value.in.EUR) %>% 
+    filter(Converted.Value.in.EUR != ".") %>% 
+    filter(Total_in_USD != 0)
+
+sigAid <- aid2Sel %>% 
+    mutate(Total_in_USD = as.numeric(Total_in_USD)) %>% 
+    filter(Total_in_USD > 1000000000) %>% 
+    filter(Type.of.Aid.General == "Military")
+
+glimpse(sigAid)
+View(sigAid)
+
+glimpse(aid2Sel)
+
+View(aid2Sel)
+
+USAid <- aid2Sel %>% 
+    filter(Countries  == "United States")
+View(USAid)
+
+USAid %>% 
+    sort()
+    ggplot()+
+    geom_point(aes(y = Announcement.Date, x = Total_in_USD))
+    
+
+
+
+```

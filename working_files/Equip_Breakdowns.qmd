@@ -1,0 +1,517 @@
+---
+title: "Funding the War in Ukraine"
+subtitle: "How Western Funding Influenced the War in Ukraine"
+author: "Bogdan Bunea, Ian Milko, Collin Schwab, and Rayyan Hussien"
+date: October 29, 2023
+format:
+  html:
+    code-fold: true
+    code-tools: true
+    theme: superhero
+
+---
+
+>Read In
+```{r}
+
+library(cowplot)
+library(tidyverse)
+library(viridis)
+library(ggrepel)
+library(gganimate)
+library(magick)
+library(here)
+
+equipment <- read.csv(here('data_raw', "FullEquipCas.csv"))
+    
+glimpse(equipment)
+```
+
+>Tanks
+```{r}
+
+tanks <- equipment %>% 
+    filter(equipment_type == 'Tanks')
+```    
+
+::: {.panel-tabset}
+
+## Total Tank Casualties
+
+```{r}
+
+library(tidyverse)
+
+tanks %>% 
+    mutate(Date = fct_inorder(Date, TRUE)) %>% 
+    ggplot(aes(x = Date, y = type_total, color = country, group = country))+
+    geom_point()+
+    geom_line()+
+    annotate(geom = 'text', x = "10/1/2023", y = 800,
+             label = 'Ukraine', size = 4, color = 'blue') +
+    annotate(geom = 'text', x = "10/1/2023", y = 2200,
+             label = 'Russia', size = 4, color = 'red') +
+    labs(x = "", y = "Total Casualties", title = "Cumulative Russian and Ukrainian Tank Casualties")+
+    scale_x_discrete(guide = guide_axis(angle = 90))+
+    theme_minimal_vgrid()+
+    theme(legend.position = 'none')
+    
+    
+```
+
+## Destroyed Tanks
+
+```{r}
+
+tanks %>% 
+    mutate(Date = fct_inorder(Date, TRUE)) %>% 
+    ggplot(aes(x = Date, y = destroyed, color = country, group = country))+
+    geom_point()+
+    geom_line()+
+    annotate(geom = 'text', x = "10/1/2023", y = 350,
+             label = 'Ukraine', size = 4, color = 'blue') +
+    annotate(geom = 'text', x = "10/1/2023", y = 1650,
+             label = 'Russia', size = 4, color = 'red') +
+    labs(x = "", y = "Tanks Destroyed", title = "Cumulative Russian and Ukrainian Destroyed Tanks")+
+    scale_x_discrete(guide = guide_axis(angle = 90))+
+    theme_minimal_vgrid()+
+    theme(legend.position = 'none')
+    
+```
+
+## Captured Tanks
+
+```{r}
+
+tanks %>% 
+    mutate(Date = fct_inorder(Date, TRUE)) %>% 
+    ggplot(aes(x = Date, y = captured, color = country, group = country))+
+    geom_point()+
+    geom_line()+
+    annotate(geom = 'text', x = "10/1/2023", y = 100,
+             label = 'Ukraine', size = 4, color = 'blue') +
+    annotate(geom = 'text', x = "10/1/2023", y = 600,
+             label = 'Russia', size = 4, color = 'red') +
+    labs(x = "", y = "Captured Tanks", title = "Cumulative Russian and Ukrainian Captured Tanks")+
+    scale_x_discrete(guide = guide_axis(angle = 90))+
+    theme_minimal_vgrid()+
+    theme(legend.position = 'none')
+
+```
+
+
+
+## Abandoned Tanks
+
+```{r}
+
+tanks %>% 
+    mutate(Date = fct_inorder(Date, TRUE)) %>% 
+    ggplot(aes(x = Date, y = abandoned, color = country, group = country))+
+    geom_point()+
+    geom_line()+
+    annotate(geom = 'text', x = "10/1/2023", y = 25,
+             label = 'Ukraine', size = 4, color = 'blue') +
+    annotate(geom = 'text', x = "10/1/2023", y = 175,
+             label = 'Russia', size = 4, color = 'red') +
+    labs(x = "", y = "Tanks Abandoned", title = "Cumulative Russian and Ukrainian Abandoned Tanks")+
+    scale_x_discrete(guide = guide_axis(angle = 90))+
+    theme_minimal_vgrid()+
+    theme(legend.position = 'none')
+
+```
+
+:::
+
+The above charts show the differences between Russian and Ukrainian tank casualties over the course of the war. As may be expected, Russia has lost far more tanks than Ukraine. 
+
+>Aircraft (Not including helicopters)
+
+```{r}
+
+aircraft <- equipment %>% 
+    filter(equipment_type == 'Aircraft')
+    
+```
+
+::: {.panel-tabset}
+
+
+## Total Aircraft Casualties
+
+```{r}
+
+aircraft %>% 
+    mutate(Date = fct_inorder(Date, TRUE)) %>%
+    ggplot(aes(x = Date, y = type_total, color = country, group = country))+
+    geom_point()+
+    geom_line()+
+    annotate(geom = 'text', x = "10/1/2023", y = 68,
+             label = 'Ukraine', size = 4, color = 'blue') +
+    annotate(geom = 'text', x = "10/1/2023", y = 100,
+             label = 'Russia', size = 4, color = 'red') +
+    labs(x = "", y = "Total Aircraft Casualties", title = "Cumulative Russian and Ukrainian Aircraft Casualties")+
+    scale_x_discrete(guide = guide_axis(angle = 90))+
+    theme_minimal_vgrid()+
+    theme(legend.position = 'none')
+
+```
+
+## Destroyed Aircraft
+
+```{r}
+
+aircraft %>% 
+    mutate(Date = fct_inorder(Date, TRUE)) %>%
+    ggplot(aes(x = Date, y = destroyed, color = country, group = country))+
+    geom_point()+
+    geom_line()+
+    annotate(geom = 'text', x = "10/1/2023", y = 60,
+             label = 'Ukraine', size = 4, color = 'blue') +
+    annotate(geom = 'text', x = "10/1/2023", y = 90,
+             label = 'Russia', size = 4, color = 'red') +
+    labs(x = "", y = "Total Destroyed Aircraft", title = "Cumulative Russian and Ukrainian Destroyed Aircraft")+
+    scale_x_discrete(guide = guide_axis(angle = 90))+
+    theme_minimal_vgrid()+
+    theme(legend.position = 'none')
+
+```
+
+## Captured Aircraft
+
+```{r}
+
+aircraft %>% 
+    mutate(Date = fct_inorder(Date, TRUE)) %>%
+    ggplot(aes(x = Date, y = captured, color = country, group = country))+
+    geom_point()+
+    geom_line()+
+    annotate(geom = 'text', x = "10/1/2023", y = 1.15,
+             label = 'Ukraine', size = 4, color = 'blue') +
+    annotate(geom = 'text', x = "10/1/2023", y = 0.15,
+             label = 'Russia', size = 4, color = 'red') +
+    labs(x = "", y = "Total Captured Aircraft", title = "Cumulative Russian and Ukrainian Captured Aircraft")+
+    scale_x_discrete(guide = guide_axis(angle = 90))+
+    theme_minimal_vgrid()+
+    theme(legend.position = 'none')
+
+```
+
+## Abandoned Aircraft
+
+```{r}
+
+aircraft %>% 
+    mutate(Date = fct_inorder(Date, TRUE)) %>%
+    ggplot(aes(x = Date, y = abandoned, color = country, group = country))+
+    geom_point()+
+    geom_line()+
+    annotate(geom = 'text', x = "10/1/2023", y = .25,
+             label = 'Ukraine = 0', size = 4, color = 'blue') +
+    annotate(geom = 'text', x = "10/1/2023", y = .2,
+             label = 'Russia = 0', size = 4, color = 'red') +
+    labs(x = "", y = "Total Abandoned Aircraft", title = "Cumulative Russian and Ukrainian Abandoned Aircraft", caption = "A Captain MUST go down with the ship!")+
+    scale_x_discrete(guide = guide_axis(angle = 90))+
+    theme_minimal_vgrid()+
+    theme(legend.position = 'none')
+
+```
+
+:::
+
+>Helicopters
+
+```{r}
+
+helicopters <- equipment %>% 
+    filter(equipment_type == 'Helicopters')
+    
+```
+
+::: {.panel-tabset}
+
+## Total Helicopter Casualties
+
+```{r}
+    
+helicopters %>% 
+    mutate(Date = fct_inorder(Date, TRUE)) %>%
+    ggplot(aes(x = Date, y = type_total, color = country, group = country))+
+    geom_point()+
+    geom_line()+
+    annotate(geom = 'text', x = "10/1/2023", y = 20,
+             label = 'Ukraine', size = 4, color = 'blue') +
+    annotate(geom = 'text', x = "10/1/2023", y = 95,
+             label = 'Russia', size = 4, color = 'red') +
+    labs(x = "", y = "Total Helicopter Casualties", title = "Cumulative Russian and Ukrainian Helicopter Casualties")+
+    scale_x_discrete(guide = guide_axis(angle = 90))+
+    theme_minimal_vgrid()+
+    theme(legend.position = 'none')
+    
+```
+
+## Helicopters Destroyed
+
+```{r}
+    
+helicopters %>% 
+    mutate(Date = fct_inorder(Date, TRUE)) %>%
+    ggplot(aes(x = Date, y = destroyed, color = country, group = country))+
+    geom_point()+
+    geom_line()+
+    annotate(geom = 'text', x = "10/1/2023", y = 20,
+             label = 'Ukraine', size = 4, color = 'blue') +
+    annotate(geom = 'text', x = "10/1/2023", y = 102,
+             label = 'Russia', size = 4, color = 'red') +
+    labs(x = "", y = "Total Destroyed Helicopters", title = "Cumulative Russian and Ukrainian Destroyed Helicopters")+
+    scale_x_discrete(guide = guide_axis(angle = 90))+
+    theme_minimal_vgrid()+
+    theme(legend.position = 'none')
+    
+```
+
+## Helicopters Captured
+
+```{r}
+    
+helicopters %>% 
+    mutate(Date = fct_inorder(Date, TRUE)) %>%
+    ggplot(aes(x = Date, y = captured, color = country, group = country))+
+    geom_point()+
+    geom_line()+
+    annotate(geom = 'text', x = "10/1/2023", y = 3.2,
+             label = 'Ukraine', size = 4, color = 'blue') +
+    annotate(geom = 'text', x = "10/1/2023", y = 1.9,
+             label = 'Russia', size = 4, color = 'red') +
+    labs(x = "", y = "Total Captured Helicopters", title = "Cumulative Russian and Ukrainian Captured Helicopters")+
+    scale_x_discrete(guide = guide_axis(angle = 90))+
+    theme_minimal_vgrid()+
+    theme(legend.position = 'none')
+    
+```
+
+## Helicopters Abandoned
+
+```{r}
+    
+helicopters %>% 
+    mutate(Date = fct_inorder(Date, TRUE)) %>%
+    ggplot(aes(x = Date, y = abandoned, color = country, group = country))+
+    geom_point()+
+    geom_line()+
+    annotate(geom = 'text', x = "10/1/2023", y = .5,
+             label = 'Ukraine', size = 4, color = 'blue') +
+    annotate(geom = 'text', x = "5/1/2022", y = 1.9,
+             label = 'Russia', size = 4, color = 'red') +
+    labs(x = "", y = "Total Abandoned Helicopters", title = "Cumulative Russian and Ukrainian Abandoned Helicopters")+
+    scale_x_discrete(guide = guide_axis(angle = 90))+
+    theme_minimal_vgrid()+
+    theme(legend.position = 'none')
+    
+```
+
+:::
+
+
+>Naval Ships
+
+```{r}
+
+ships <- equipment %>% 
+    filter(equipment_type == 'Naval Ships')
+    
+```
+
+::: {.panel-tabset}
+
+## Total Ship Casualties
+
+```{r}
+    
+ships %>% 
+    mutate(Date = fct_inorder(Date, TRUE)) %>%
+    ggplot(aes(x = Date, y = type_total, color = country, group = country))+
+    geom_point()+
+    geom_line()+
+    annotate(geom = 'text', x = "10/1/2023", y = 30,
+             label = 'Ukraine', size = 4, color = 'blue') +
+    annotate(geom = 'text', x = "10/1/2023", y = 10,
+             label = 'Russia', size = 4, color = 'red') +
+    labs(x = "", y = "Total Ship Casualties", title = "Cumulative Russian and Ukrainian Naval Ship Casualties")+
+    scale_x_discrete(guide = guide_axis(angle = 90))+
+    theme_minimal_vgrid()+
+    theme(legend.position = 'none')
+
+```
+
+## Destroyed Ships
+
+```{r}
+    
+ships %>% 
+    mutate(Date = fct_inorder(Date, TRUE)) %>%
+    ggplot(aes(x = Date, y = destroyed, color = country, group = country))+
+    geom_point()+
+    geom_line()+
+    annotate(geom = 'text', x = "10/1/2023", y = 10,
+             label = 'Ukraine', size = 4, color = 'blue') +
+    annotate(geom = 'text', x = "10/1/2023", y = 7,
+             label = 'Russia', size = 4, color = 'red') +
+    labs(x = "", y = "Total Destroyed Ships", title = "Cumulative Russian and Ukrainian Destroyed Naval Ships")+
+    scale_x_discrete(guide = guide_axis(angle = 90))+
+    theme_minimal_vgrid()+
+    theme(legend.position = 'none')
+
+```
+
+## Captured Ships
+
+```{r}
+    
+ships %>% 
+    mutate(Date = fct_inorder(Date, TRUE)) %>%
+    ggplot(aes(x = Date, y = captured, color = country, group = country))+
+    geom_point()+
+    geom_line()+
+    annotate(geom = 'text', x = "10/1/2023", y = 18,
+             label = 'Ukraine', size = 4, color = 'blue') +
+    annotate(geom = 'text', x = "10/1/2023", y = 1,
+             label = 'Russia', size = 4, color = 'red') +
+    labs(x = "", y = "Total Captured Ships", title = "Cumulative Russian and Ukrainian Captured Naval Ships")+
+    scale_x_discrete(guide = guide_axis(angle = 90))+
+    theme_minimal_vgrid()+
+    theme(legend.position = 'none')
+
+```
+
+## Abandoned Ships
+
+```{r}
+    
+ships %>% 
+    mutate(Date = fct_inorder(Date, TRUE)) %>%
+    ggplot(aes(x = Date, y = abandoned, color = country, group = country))+
+    geom_point()+
+    geom_line()+
+    annotate(geom = 'text', x = "10/1/2023", y = 2,
+             label = 'Ukraine = 0', size = 4, color = 'blue') +
+    annotate(geom = 'text', x = "10/1/2023", y = 1,
+             label = 'Russia = 0', size = 4, color = 'red') +
+    labs(x = "", y = "Total Abandoned Ships", title = "Cumulative Russian and Ukrainian Abandoned Naval Ships")+
+    scale_x_discrete(guide = guide_axis(angle = 90))+
+    theme_minimal_vgrid()+
+    theme(legend.position = 'none')
+
+```
+    
+:::
+
+
+>Anti-Aircraft Guns
+```{r}
+
+aaguns <- equipment %>% 
+    filter(equipment_type == 'Anti-Aircraft Guns')
+    
+aaguns %>% 
+    mutate(Date = fct_inorder(Date, TRUE)) %>%
+    ggplot(aes(x = Date, y = type_total, color = country, group = country))+
+    geom_point()+
+    geom_line()+
+    scale_x_discrete(guide = guide_axis(angle = 90))  
+    
+aaguns %>% 
+    mutate(Date = fct_inorder(Date, TRUE)) %>%
+    ggplot(aes(x = Date, y = captured, color = country, group = country))+
+    geom_point()+
+    geom_line()+
+    scale_x_discrete(guide = guide_axis(angle = 90)) 
+    
+aaguns %>% 
+    mutate(Date = fct_inorder(Date, TRUE)) %>%
+    ggplot(aes(x = Date, y = destroyed, color = country, group = country))+
+    geom_point()+
+    geom_line()+
+    scale_x_discrete(guide = guide_axis(angle = 90)) 
+    
+aaguns %>% 
+    mutate(Date = fct_inorder(Date, TRUE)) %>%
+    ggplot(aes(x = Date, y = abandoned, color = country, group = country))+
+    geom_point()+
+    geom_line()+
+    scale_x_discrete(guide = guide_axis(angle = 90)) 
+
+```
+
+>Infantry Fighting Vehicles
+```{r}
+
+infantry_fighting <- equipment %>% 
+    filter(equipment_type == 'Infantry Fighting Vehicles')
+    
+infantry_fighting %>% 
+    mutate(Date = fct_inorder(Date, TRUE)) %>%
+    ggplot(aes(x = Date, y = type_total, color = country, group = country))+
+    geom_point()+
+    geom_line()+
+    scale_x_discrete(guide = guide_axis(angle = 90))
+    
+infantry_fighting %>% 
+    mutate(Date = fct_inorder(Date, TRUE)) %>%
+    ggplot(aes(x = Date, y = captured, color = country, group = country))+
+    geom_point()+
+    geom_line()+
+    scale_x_discrete(guide = guide_axis(angle = 90))
+    
+infantry_fighting %>% 
+    mutate(Date = fct_inorder(Date, TRUE)) %>%
+    ggplot(aes(x = Date, y = destroyed, color = country, group = country))+
+    geom_point()+
+    geom_line()+
+    scale_x_discrete(guide = guide_axis(angle = 90))
+    
+infantry_fighting %>% 
+    mutate(Date = fct_inorder(Date, TRUE)) %>%
+    ggplot(aes(x = Date, y = abandoned, color = country, group = country))+
+    geom_point()+
+    geom_line()+
+    scale_x_discrete(guide = guide_axis(angle = 90))
+```
+
+>Surface to Air
+```{r}
+
+s2a <- equipment %>% 
+    filter(equipment_type == 'Surface-To-Air Missile Systems')
+
+s2a %>% 
+    mutate(Date = fct_inorder(Date, TRUE)) %>%
+    ggplot(aes(x = Date, y = type_total, color = country, group = country))+
+    geom_point()+
+    geom_line()+
+    scale_x_discrete(guide = guide_axis(angle = 90))    
+    
+s2a %>% 
+    mutate(Date = fct_inorder(Date, TRUE)) %>%
+    ggplot(aes(x = Date, y = captured, color = country, group = country))+
+    geom_point()+
+    geom_line()+
+    scale_x_discrete(guide = guide_axis(angle = 90))  
+    
+s2a %>% 
+    mutate(Date = fct_inorder(Date, TRUE)) %>%
+    ggplot(aes(x = Date, y = destroyed, color = country, group = country))+
+    geom_point()+
+    geom_line()+
+    scale_x_discrete(guide = guide_axis(angle = 90))  
+    
+s2a %>% 
+    mutate(Date = fct_inorder(Date, TRUE)) %>%
+    ggplot(aes(x = Date, y = abandoned, color = country, group = country))+
+    geom_point()+
+    geom_line()+
+    scale_x_discrete(guide = guide_axis(angle = 90))  
+
+View(s2a)
+```
+

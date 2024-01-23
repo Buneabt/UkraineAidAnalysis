@@ -1,0 +1,46 @@
+```{r}
+library(tidyverse)
+library(here)
+library(cowplot)
+
+
+
+
+withPrices <- read.csv(here('data_raw','2023-10-22 - Equp Cas.csv'))
+
+View(graph)
+
+graph <- withPrices %>% 
+    filter(country == "Russia") %>% 
+    select(equipment_type, type_total, Price, Total)
+
+View(withPrices)
+
+graph2 <- withPrices %>% 
+    filter(country == "Ukraine") %>% 
+    select(equipment_type, type_total, Price, Total)
+
+View(graph2)
+    
+
+graph %>% 
+    mutate(Total = as.numeric(Total)) %>% 
+    mutate(Total = Total / 10^9) %>%
+    slice(2:25) %>% 
+    ggplot()+
+    geom_col(aes(x = Total, y = reorder(equipment_type, Total)))+
+    labs(x = 'Total Cost (in Billions of $))', y = "", title = "Russian Equipment Losses", subtitle = "In the War in Ukraine")+
+    theme_minimal_vgrid()
+
+graph2 %>% 
+    mutate(Total = as.numeric(Total)) %>% 
+    mutate(Total = Total / 10^9) %>%
+    slice(2:25) %>% 
+    ggplot()+
+    geom_col(aes(x = Total, y = reorder(equipment_type, Total)))+
+    labs(x = 'Total Cost (in Billions of $))', y = "", title = "Ukrainian Equipment Losses", subtitle = "In the War in Ukraine")+
+    theme_minimal_vgrid()
+    
+
+
+```

@@ -1,0 +1,253 @@
+>Read In
+```{r}
+
+library(cowplot)
+library(tidyverse)
+library(viridis)
+library(ggrepel)
+library(gganimate)
+library(magick)
+library(here)
+
+equipment <- read.csv(here('data_raw', "FullEquipCas.csv"))
+    
+glimpse(equipment)
+```
+
+>Tanks
+```{r}
+
+glimpse(tanks)
+
+tanks <- equipment %>% 
+    filter(equipment_type == 'Tanks')
+    
+tanks_spr_22 <- tanks %>% 
+    filter(date == "6/1/2022",
+        date == "7/1/2022",
+        date == "8/1/2022")
+
+tanks %>% 
+    mutate(Date = fct_inorder(Date, TRUE)) %>%
+    ggplot(aes(x = Date, y = type_total, color = country, group = country))+
+    geom_point()+
+    geom_line()+
+    scale_x_discrete(guide = guide_axis(angle = 90))
+    
+View(tanks)
+```
+
+>Aircraft (Not including helicopters)
+
+```{r}
+
+aircraft <- equipment %>% 
+    filter(equipment_type == 'Aircraft')
+    
+aircraft %>% 
+    mutate(Date = fct_inorder(Date, TRUE)) %>%
+    ggplot(aes(x = Date, y = type_total, color = country, group = country))+
+    geom_point()+
+    geom_line()+
+    scale_x_discrete(guide = guide_axis(angle = 90))
+    
+aircraft %>% 
+    mutate(Date = fct_inorder(Date, TRUE)) %>%
+    ggplot(aes(x = Date, y = captured, color = country, group = country))+
+    geom_point()+
+    geom_line()+
+    scale_x_discrete(guide = guide_axis(angle = 90))
+    
+aircraft %>% 
+    mutate(Date = fct_inorder(Date, TRUE)) %>%
+    ggplot(aes(x = Date, y = destroyed, color = country, group = country))+
+    geom_point()+
+    geom_line()+
+    scale_x_discrete(guide = guide_axis(angle = 90))
+    
+aircraft %>% 
+    mutate(Date = fct_inorder(Date, TRUE)) %>%
+    ggplot(aes(x = Date, y = abandoned, color = country, group = country))+
+    geom_point()+
+    geom_line()+
+    scale_x_discrete(guide = guide_axis(angle = 90))
+```
+
+>Helicopters
+```{r}
+
+helicopters <- equipment %>% 
+    filter(equipment_type == 'Helicopters')
+    
+helicopters %>% 
+    mutate(Date = fct_inorder(Date, TRUE)) %>%
+    ggplot(aes(x = Date, y = type_total, color = country, group = country))+
+    geom_point()+
+    geom_line()+
+    scale_x_discrete(guide = guide_axis(angle = 90))
+    
+helicopters %>% 
+    mutate(Date = fct_inorder(Date, TRUE)) %>%
+    ggplot(aes(x = Date, y = captured, color = country, group = country))+
+    geom_point()+
+    geom_line()+
+    scale_x_discrete(guide = guide_axis(angle = 90))
+    
+helicopters %>% 
+    mutate(Date = fct_inorder(Date, TRUE)) %>%
+    ggplot(aes(x = Date, y = destroyed, color = country, group = country))+
+    geom_point()+
+    geom_line()+
+    scale_x_discrete(guide = guide_axis(angle = 90))
+    
+helicopters %>% 
+    mutate(Date = fct_inorder(Date, TRUE)) %>%
+    ggplot(aes(x = Date, y = abandoned, color = country, group = country))+
+    geom_point()+
+    geom_line()+
+    scale_x_discrete(guide = guide_axis(angle = 90))
+```
+
+>Naval Ships
+```{r}
+
+ships <- equipment %>% 
+    filter(equipment_type == 'Naval Ships')
+
+ships %>% 
+    mutate(Date = fct_inorder(Date, TRUE)) %>%
+    ggplot(aes(x = Date, y = type_total, color = country, group = country))+
+    geom_point()+
+    geom_line()+
+    scale_x_discrete(guide = guide_axis(angle = 90))
+    
+ships %>% 
+    mutate(Date = fct_inorder(Date, TRUE)) %>%
+    ggplot(aes(x = Date, y = captured, color = country, group = country))+
+    geom_point()+
+    geom_line()+
+    scale_x_discrete(guide = guide_axis(angle = 90))
+    
+ships %>% 
+    mutate(Date = fct_inorder(Date, TRUE)) %>%
+    ggplot(aes(x = Date, y = destroyed, color = country, group = country))+
+    geom_point()+
+    geom_line()+
+    scale_x_discrete(guide = guide_axis(angle = 90))
+    
+ships %>% 
+    mutate(Date = fct_inorder(Date, TRUE)) %>%
+    ggplot(aes(x = Date, y = abandoned, color = country, group = country))+
+    geom_point()+
+    geom_line()+
+    scale_x_discrete(guide = guide_axis(angle = 90))
+```
+
+>Anti-Aircraft Guns
+```{r}
+
+aaguns <- equipment %>% 
+    filter(equipment_type == 'Anti-Aircraft Guns')
+    
+aaguns %>% 
+    mutate(Date = fct_inorder(Date, TRUE)) %>%
+    ggplot(aes(x = Date, y = type_total, color = country, group = country))+
+    geom_point()+
+    geom_line()+
+    scale_x_discrete(guide = guide_axis(angle = 90))  
+    
+aaguns %>% 
+    mutate(Date = fct_inorder(Date, TRUE)) %>%
+    ggplot(aes(x = Date, y = captured, color = country, group = country))+
+    geom_point()+
+    geom_line()+
+    scale_x_discrete(guide = guide_axis(angle = 90)) 
+    
+aaguns %>% 
+    mutate(Date = fct_inorder(Date, TRUE)) %>%
+    ggplot(aes(x = Date, y = destroyed, color = country, group = country))+
+    geom_point()+
+    geom_line()+
+    scale_x_discrete(guide = guide_axis(angle = 90)) 
+    
+aaguns %>% 
+    mutate(Date = fct_inorder(Date, TRUE)) %>%
+    ggplot(aes(x = Date, y = abandoned, color = country, group = country))+
+    geom_point()+
+    geom_line()+
+    scale_x_discrete(guide = guide_axis(angle = 90)) 
+
+```
+
+>Infantry Fighting Vehicles
+```{r}
+
+infantry_fighting <- equipment %>% 
+    filter(equipment_type == 'Infantry Fighting Vehicles')
+    
+infantry_fighting %>% 
+    mutate(Date = fct_inorder(Date, TRUE)) %>%
+    ggplot(aes(x = Date, y = type_total, color = country, group = country))+
+    geom_point()+
+    geom_line()+
+    scale_x_discrete(guide = guide_axis(angle = 90))
+    
+infantry_fighting %>% 
+    mutate(Date = fct_inorder(Date, TRUE)) %>%
+    ggplot(aes(x = Date, y = captured, color = country, group = country))+
+    geom_point()+
+    geom_line()+
+    scale_x_discrete(guide = guide_axis(angle = 90))
+    
+infantry_fighting %>% 
+    mutate(Date = fct_inorder(Date, TRUE)) %>%
+    ggplot(aes(x = Date, y = destroyed, color = country, group = country))+
+    geom_point()+
+    geom_line()+
+    scale_x_discrete(guide = guide_axis(angle = 90))
+    
+infantry_fighting %>% 
+    mutate(Date = fct_inorder(Date, TRUE)) %>%
+    ggplot(aes(x = Date, y = abandoned, color = country, group = country))+
+    geom_point()+
+    geom_line()+
+    scale_x_discrete(guide = guide_axis(angle = 90))
+```
+
+>Surface to Air
+```{r}
+
+s2a <- equipment %>% 
+    filter(equipment_type == 'Surface-To-Air Missile Systems')
+
+s2a %>% 
+    mutate(Date = fct_inorder(Date, TRUE)) %>%
+    ggplot(aes(x = Date, y = type_total, color = country, group = country))+
+    geom_point()+
+    geom_line()+
+    scale_x_discrete(guide = guide_axis(angle = 90))    
+    
+s2a %>% 
+    mutate(Date = fct_inorder(Date, TRUE)) %>%
+    ggplot(aes(x = Date, y = captured, color = country, group = country))+
+    geom_point()+
+    geom_line()+
+    scale_x_discrete(guide = guide_axis(angle = 90))  
+    
+s2a %>% 
+    mutate(Date = fct_inorder(Date, TRUE)) %>%
+    ggplot(aes(x = Date, y = destroyed, color = country, group = country))+
+    geom_point()+
+    geom_line()+
+    scale_x_discrete(guide = guide_axis(angle = 90))  
+    
+s2a %>% 
+    mutate(Date = fct_inorder(Date, TRUE)) %>%
+    ggplot(aes(x = Date, y = abandoned, color = country, group = country))+
+    geom_point()+
+    geom_line()+
+    scale_x_discrete(guide = guide_axis(angle = 90))  
+
+View(s2a)
+```
+
