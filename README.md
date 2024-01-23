@@ -4,5 +4,5 @@ My name is Bogdan and this project goes about finding if there is a relation bet
 
 To open up this report all you have to do is download all files then open up the html file.
 
-This report was solely written in R.
+This report was solely written in R studio, with the help of Quarto for HTML formatting.
 
